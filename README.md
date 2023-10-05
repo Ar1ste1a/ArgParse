@@ -1,5 +1,5 @@
 # ArgParse
-![Image description](https://img.wanman.io/fUSu0/YUpOSuMo10.png/raw)
+<img src="[https://example.com/path/to/image.jpg](https://img.wanman.io/fUSu0/YUpOSuMo10.png/raw)" width="200" height="200">
 
 ## A simple argument parsing library for Golang
 
