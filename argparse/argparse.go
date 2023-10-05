@@ -24,8 +24,14 @@ func NewParser(name, description, details string) *argparse {
 
 // AddArg new option, ex AddArg('-c', '--count', 'number of x', ArgType.STRING)
 func (a *argparse) AddArg(alias, flag, description, argType, defaultValue string, required bool) {
+	// Check if the argument already exists
+	if a.argumentExists(flag, alias) {
+		fmt.Println(fmt.Errorf("the argument already exists %s, %s", flag, alias))
+		os.Exit(0)
+	}
+
 	// Check for empty values
-	if ok := newArgParamCheck(alias, flag, argType); !ok {
+	if ok := newArgParamEmpty(alias, flag, argType); !ok {
 		os.Exit(0)
 	}
 	argTypeObj := getArgTypeFromString(argType)
@@ -34,8 +40,19 @@ func (a *argparse) AddArg(alias, flag, description, argType, defaultValue string
 	a.args = append(a.args, arg)
 }
 
-// newArgParamCheck examine each new argument, ensure they have value
-func newArgParamCheck(alias, flag, argType string) bool {
+func (a *argparse) argumentExists(flag, alias string) bool {
+	for i, _ := range a.args {
+		arg := a.args[i]
+
+		if arg.flag == flag || arg.alias == alias {
+			return true
+		}
+	}
+	return false
+}
+
+// newArgParamEmpty examine each new argument, ensure they have value
+func newArgParamEmpty(alias, flag, argType string) bool {
 	if strings.TrimSpace(alias) == "" {
 		return false
 	} else if strings.TrimSpace(flag) == "" {
