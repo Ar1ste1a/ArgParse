@@ -219,12 +219,24 @@ func (a *argparse) mapArgs() map[string]interface{} {
 	return argsMapped
 }
 
+// Get gets the real value of the parameter or returns nil
+func (a *argparse) Get(paramName string) any {
+	for i, _ := range a.args {
+		arg := a.args[i]
+
+		if strings.EqualFold(arg.name, paramName) {
+			return arg.getRealValue()
+		}
+	}
+	return nil
+}
+
 // getArg returns the pointer to the argument utilizing a given parameter (ex -i or --ipaddress)
 func (a *argparse) getArg(param string) *Argument {
 	for i, _ := range a.args {
 		arg := a.args[i]
 
-		if strings.EqualFold(arg.alias, param) || strings.EqualFold(arg.flag, param) {
+		if arg.alias == param || strings.EqualFold(arg.flag, param) {
 			return &arg
 		}
 	}
