@@ -34,8 +34,13 @@ Next, add your argument(s) to the argparse object. Argparse can currently interp
 parser.AddArg("-c", "--cidr", "cidr range to scan", "cidrrange", "192.168.0.0/16", true)
 ```
 
-Finally, Parse the arguments passed to the program
+Parse the arguments passed to the program
 
 ``` go
 parser.Parse()
+```
+
+You can now access any parameters passed by the user by using "Get"
+``` go
+cidr := parser.Get("cidr")
 ```
