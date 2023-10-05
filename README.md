@@ -1,5 +1,5 @@
 # ArgParse
-![Alt text](https://img.wanman.io/fUSu0/YUpOSuMo10.png)
+![Ar1ste1a](https://img.wanman.io/fUSu0/YUpOSuMo10.png/raw)
 
 ## A simple argument parsing library for Golang
 
