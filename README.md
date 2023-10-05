@@ -1,7 +1,7 @@
 # ArgParse
 ## A simple argument parsing library for Golang
 
-<img src="https://img.wanman.io/fUSu0/veqOViVI42.png/raw" alt="Ar1ste1a" title="Ar1ste1a Offensive Security">
+<img src="https://img.wanman.io/fUSu0/tIFUJOMu64.png/raw" alt="Ar1ste1a" title="Ar1ste1a Offensive Security">
 
 # Getting Started
 
