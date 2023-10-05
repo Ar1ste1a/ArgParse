@@ -221,10 +221,11 @@ func (a *argparse) mapArgs() map[string]interface{} {
 
 // Get gets the real value of the parameter or returns nil
 func (a *argparse) Get(paramName string) any {
+	param := strings.Replace(paramName, "-", "_", -1)
 	for i, _ := range a.args {
 		arg := a.args[i]
 
-		if strings.EqualFold(arg.name, paramName) {
+		if strings.EqualFold(arg.name, param) {
 			return arg.getRealValue()
 		}
 	}
