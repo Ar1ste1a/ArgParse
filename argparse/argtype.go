@@ -17,7 +17,7 @@ const (
 	INVALID   ArgType = iota
 )
 
-// GetArgTypeFromString Return an ArgType object based on the string passed
+// getArgTypeFromString Return an ArgType object based on the string passed
 func getArgTypeFromString(s string) ArgType {
 	lowerS := strings.ToLower(s)
 	switch lowerS {
@@ -38,6 +38,7 @@ func getArgTypeFromString(s string) ArgType {
 	}
 }
 
+// toString generates a string for each ArgType
 func (at ArgType) toString() string {
 	switch at {
 	case BOOL:
