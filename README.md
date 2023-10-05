@@ -1,7 +1,6 @@
 # ArgParse
 
 ## A simple argument parsing library for Golang
-### Similar to ArgParse for Python3
 
 # Getting Started
 
