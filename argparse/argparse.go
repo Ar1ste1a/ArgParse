@@ -14,7 +14,8 @@ type argparse struct {
 	details     string
 }
 
-// Create a new argparse object and return its pointer
+// NewParser Instantiates a new argparse object and return its pointer
+// Help parameter is automatically generated
 func NewParser(name, description, details string) *argparse {
 	var args []Argument
 	parser := argparse{name: name, description: description, details: details, args: args}
@@ -22,7 +23,8 @@ func NewParser(name, description, details string) *argparse {
 	return &parser
 }
 
-// AddArg new option, ex AddArg('-c', '--count', 'number of x', ArgType.STRING)
+// AddArg new Argument object added to the argparse object
+// ex AddArg('-c', '--count', 'number of x', ArgType.STRING, '1', false)
 func (a *argparse) AddArg(alias, flag, description, argType, defaultValue string, required bool) {
 	// Check if the argument already exists
 	if a.argumentExists(flag, alias) {
@@ -40,11 +42,14 @@ func (a *argparse) AddArg(alias, flag, description, argType, defaultValue string
 	a.args = append(a.args, arg)
 }
 
+// argumentExists determines if a given parameter exists for the argparse object
+// does not allow for the same flag name as this is used to determine the field name. Does allow for differentiation between
+// lowercase and uppercase aliases
 func (a *argparse) argumentExists(flag, alias string) bool {
 	for i, _ := range a.args {
 		arg := a.args[i]
 
-		if arg.flag == flag || arg.alias == alias {
+		if strings.EqualFold(arg.flag, flag) || arg.alias == alias {
 			return true
 		}
 	}
@@ -63,6 +68,7 @@ func newArgParamEmpty(alias, flag, argType string) bool {
 	return true
 }
 
+// getRequiredArgs Returns a list of all required arguments
 func (a *argparse) getRequiredArgs() []Argument {
 	var required []Argument
 
@@ -76,6 +82,7 @@ func (a *argparse) getRequiredArgs() []Argument {
 	return required
 }
 
+// getOptionalArgs Returns a list of all optional arguments
 func (a *argparse) getOptionalArgs() []Argument {
 	var optional []Argument
 
@@ -98,13 +105,6 @@ func (a *argparse) helpRequested() bool {
 		}
 	}
 	return false
-}
-
-func (a *argparse) getProgramName() string {
-	programPath := os.Args[0]
-	start := strings.LastIndex(programPath, "/") + 1
-	programName := programPath[start:]
-	return programName
 }
 
 // Print the banner for the user
@@ -219,6 +219,7 @@ func (a *argparse) mapArgs() map[string]interface{} {
 	return argsMapped
 }
 
+// getArg returns the pointer to the argument utilizing a given parameter (ex -i or --ipaddress)
 func (a *argparse) getArg(param string) *Argument {
 	for i, _ := range a.args {
 		arg := a.args[i]
