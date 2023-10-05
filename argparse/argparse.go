@@ -25,7 +25,7 @@ func NewParser(name, description, details string) *argparse {
 // AddArg new option, ex AddArg('-c', '--count', 'number of x', ArgType.STRING)
 func (a *argparse) AddArg(alias, flag, description, argType, defaultValue string, required bool) {
 	// Check for empty values
-	if ok := newArgParamCheck(alias, flag, description, argType); !ok {
+	if ok := newArgParamCheck(alias, flag, argType); !ok {
 		os.Exit(0)
 	}
 	argTypeObj := getArgTypeFromString(argType)
@@ -35,12 +35,10 @@ func (a *argparse) AddArg(alias, flag, description, argType, defaultValue string
 }
 
 // newArgParamCheck examine each new argument, ensure they have value
-func newArgParamCheck(alias, flag, description, argType string) bool {
+func newArgParamCheck(alias, flag, argType string) bool {
 	if strings.TrimSpace(alias) == "" {
 		return false
 	} else if strings.TrimSpace(flag) == "" {
-		return false
-	} else if strings.TrimSpace(description) == "" {
 		return false
 	} else if strings.TrimSpace(argType) == "" {
 		return false
