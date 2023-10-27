@@ -3,29 +3,30 @@ package argparse
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
-type argparse struct {
-	args        []Argument
+type Argparse struct {
+	args        []*Argument
 	argMap      map[string]interface{}
 	name        string
 	description string
 	details     string
 }
 
-// NewParser Instantiates a new argparse object and return its pointer
+// NewParser Instantiates a new Argparse object and return its pointer
 // Help parameter is automatically generated
-func NewParser(name, description, details string) *argparse {
-	var args []Argument
-	parser := argparse{name: name, description: description, details: details, args: args}
+func NewParser(name, description, details string) *Argparse {
+	var args []*Argument
+	parser := Argparse{name: name, description: description, details: details, args: args}
 	parser.AddArg("-h", "--help", "show this help message and exit", "string", "", false)
 	return &parser
 }
 
-// AddArg new Argument object added to the argparse object
+// AddArg new Argument object added to the Argparse object
 // ex AddArg('-c', '--count', 'number of x', ArgType.STRING, '1', false)
-func (a *argparse) AddArg(alias, flag, description, argType, defaultValue string, required bool) {
+func (a *Argparse) AddArg(alias, flag, description, argType, defaultValue string, required bool) {
 	// Check if the argument already exists
 	if a.argumentExists(flag, alias) {
 		fmt.Println(fmt.Errorf("the argument already exists %s, %s", flag, alias))
@@ -39,13 +40,13 @@ func (a *argparse) AddArg(alias, flag, description, argType, defaultValue string
 	argTypeObj := getArgTypeFromString(argType)
 
 	arg := NewArgument(argTypeObj, flag, alias, description, defaultValue, required)
-	a.args = append(a.args, arg)
+	a.args = append(a.args, &arg)
 }
 
-// argumentExists determines if a given parameter exists for the argparse object
+// argumentExists determines if a given parameter exists for the Argparse object
 // does not allow for the same flag name as this is used to determine the field name. Does allow for differentiation between
 // lowercase and uppercase aliases
-func (a *argparse) argumentExists(flag, alias string) bool {
+func (a *Argparse) argumentExists(flag, alias string) bool {
 	for i, _ := range a.args {
 		arg := a.args[i]
 
@@ -69,8 +70,8 @@ func newArgParamEmpty(alias, flag, argType string) bool {
 }
 
 // getRequiredArgs Returns a list of all required arguments
-func (a *argparse) getRequiredArgs() []Argument {
-	var required []Argument
+func (a *Argparse) getRequiredArgs() []*Argument {
+	var required []*Argument
 
 	for i, _ := range a.args {
 		arg := a.args[i]
@@ -83,8 +84,8 @@ func (a *argparse) getRequiredArgs() []Argument {
 }
 
 // getOptionalArgs Returns a list of all optional arguments
-func (a *argparse) getOptionalArgs() []Argument {
-	var optional []Argument
+func (a *Argparse) getOptionalArgs() []*Argument {
+	var optional []*Argument
 
 	for i, _ := range a.args {
 		arg := a.args[i]
@@ -97,7 +98,7 @@ func (a *argparse) getOptionalArgs() []Argument {
 }
 
 // helpRequested iterates over user arguments to determine whether -h or --help has been passed
-func (a *argparse) helpRequested() bool {
+func (a *Argparse) helpRequested() bool {
 	for _, arg := range os.Args[1:] {
 		argLower := strings.ToLower(strings.Trim(arg, "- \t"))
 		if strings.EqualFold(argLower, "h") || strings.EqualFold(argLower, "help") {
@@ -108,7 +109,7 @@ func (a *argparse) helpRequested() bool {
 }
 
 // Print the banner for the user
-func (a *argparse) printBanner() {
+func (a *Argparse) printBanner() {
 
 	// Set help parameterized help banner
 	banner := `
@@ -167,7 +168,7 @@ $details`
 }
 
 // Parse parses arguments, return a mapping of each
-func (a *argparse) Parse() {
+func (a *Argparse) Parse() {
 	// Check if -h or --help in parameters, print help banner
 	if help := a.helpRequested(); help {
 		a.printBanner()
@@ -196,7 +197,7 @@ func (a *argparse) Parse() {
 }
 
 // Iterate over the user input, assign parameter names to the real value of the argument passed by the user
-func (a *argparse) mapArgs() map[string]interface{} {
+func (a *Argparse) mapArgs() map[string]interface{} {
 	var arg *Argument
 
 	argsMapped := make(map[string]interface{})
@@ -211,7 +212,13 @@ func (a *argparse) mapArgs() map[string]interface{} {
 			if arg == nil {
 				continue
 			}
-			arg.value = userArgs[index+1]
+			if arg.argType == BOOL {
+				val, _ := strconv.ParseBool(arg.value.(string))
+				newVal := !val
+				arg.setValue(strconv.FormatBool(newVal))
+			} else {
+				arg.value = userArgs[index+1]
+			}
 			argsMapped[arg.name] = arg.getRealValue()
 		}
 	}
@@ -220,7 +227,7 @@ func (a *argparse) mapArgs() map[string]interface{} {
 }
 
 // Get gets the real value of the parameter or returns nil
-func (a *argparse) Get(paramName string) any {
+func (a *Argparse) Get(paramName string) any {
 	param := strings.Replace(paramName, "-", "_", -1)
 	for i, _ := range a.args {
 		arg := a.args[i]
@@ -233,12 +240,12 @@ func (a *argparse) Get(paramName string) any {
 }
 
 // getArg returns the pointer to the argument utilizing a given parameter (ex -i or --ipaddress)
-func (a *argparse) getArg(param string) *Argument {
+func (a *Argparse) getArg(param string) *Argument {
 	for i, _ := range a.args {
 		arg := a.args[i]
 
 		if arg.alias == param || strings.EqualFold(arg.flag, param) {
-			return &arg
+			return arg
 		}
 	}
 	return nil
@@ -247,7 +254,7 @@ func (a *argparse) getArg(param string) *Argument {
 // Helper Functions
 
 // getOptionsLength get the maximum length of a parameter and description, used for formatting help output
-func getOptionsLength(optional, required []Argument) (int, int) {
+func getOptionsLength(optional, required []*Argument) (int, int) {
 	maxDescriptionLength := 0
 	maxParamsLength := 0
 
