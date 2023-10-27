@@ -45,3 +45,7 @@ You can now access any parameters passed by the user by using "Get"
 ``` go
 cidr := parser.Get("cidr")
 ```
+
+
+Todo: 
+1. Add dependencies based on other parameters
