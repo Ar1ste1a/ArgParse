@@ -10,6 +10,6 @@ func main() {
 	parser.AddArg("-i", "--ip-address-arg", "an ip address argument", "ipaddress", "1", true)
 	parser.AddArg("-b", "--bool-arg", "a boolean argument", "bool", "false", true)
 	parser.Parse()
-	s := parser.Get("string-arg")
+	s := parser.Get("string-arg").(string)
 	fmt.Println(s)
 }
