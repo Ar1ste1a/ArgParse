@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -19,12 +20,14 @@ type Argument struct {
 }
 
 // getRealValue return an object of the Argument.value cast to the Argument.argType
-func (a Argument) getRealValue() any {
+func (a *Argument) getRealValue() any {
 	switch a.argType {
 	case BOOL:
-		return a.value.(bool)
+		out, _ := strconv.ParseBool(a.value.(string))
+		return out
 	case INTEGER:
-		return a.value.(int)
+		out, _ := strconv.Atoi(a.value.(string))
+		return out
 	case STRING:
 		return a.value.(string)
 	case IPADDRESS:
@@ -70,6 +73,10 @@ func (a *Argument) getValue() any {
 	default:
 		return a.value.(string)
 	}
+}
+
+func (a *Argument) setValue(newVal any) {
+	a.value = newVal.(string)
 }
 
 // isRequired Determines if a given argument is required based on Argument.required
