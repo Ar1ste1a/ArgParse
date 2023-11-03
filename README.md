@@ -1,7 +1,9 @@
 # ArgParse
 ## A simple argument parsing library for Golang
 
-<img src="https://img.wanman.io/fUSu0/SaCUyEMe87.png/raw" alt="Ar1ste1a" title="Ar1ste1a Offensive Security">
+<div style="margin-left: calc(50% - 150px)">
+    <img src="https://img.wanman.io/fUSu0/SaCUyEMe87.png/raw" style="width: 350px; height: auto" alt="Ar1ste1a" title="Ar1ste1a Offensive Security">
+</div>
 
 # Getting Started
 
