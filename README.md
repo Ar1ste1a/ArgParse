@@ -9,7 +9,7 @@
 
 To begin, import the argparse library
 ``` go
-import "internal/argparse"
+import "github.com/Ar1ste1a/ArgParse"
 ```
 
 Next,  create a new argparse object with the following information:
