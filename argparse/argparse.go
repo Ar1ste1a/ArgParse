@@ -113,7 +113,8 @@ func (a *Argparse) printBanner() {
 
 	// Set help parameterized help banner
 	banner := `
-usage: $name [-h --help] $required $optional
+$name
+usage: $arg1 [-h --help] $required $optional
 
 $description
 
@@ -129,6 +130,9 @@ $details`
 
 	// Replace the details
 	banner = strings.Replace(banner, "$details", a.details, 1)
+
+	// Replace the arg1
+	banner = strings.Replace(banner, "$arg1", os.Args[0], 1)
 
 	// Gather optional parameters
 	optional := a.getOptionalArgs()
