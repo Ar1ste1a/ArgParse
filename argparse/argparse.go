@@ -111,7 +111,7 @@ func (a *Argparse) helpRequested() bool {
 // Print the banner for the user
 func (a *Argparse) printBanner() {
 
-	// Set help parameterized help banner
+	// Set parameterized help banner
 	banner := `
 $name
 usage: $arg1 [-h --help] $required $optional
