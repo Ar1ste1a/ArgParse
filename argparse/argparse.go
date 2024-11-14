@@ -3,6 +3,7 @@ package argparse
 import (
 	"fmt"
 	"os"
+	"path"
 	"strconv"
 	"strings"
 )
@@ -132,7 +133,7 @@ $details`
 	banner = strings.Replace(banner, "$details", a.details, 1)
 
 	// Replace the arg1
-	banner = strings.Replace(banner, "$arg1", os.Args[0], 1)
+	banner = strings.Replace(banner, "$arg1", path.Base(os.Args[0]), 1)
 
 	// Gather optional parameters
 	optional := a.getOptionalArgs()
